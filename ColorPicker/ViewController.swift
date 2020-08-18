@@ -21,17 +21,21 @@ class ViewController: UIViewController {
         static let red: Int = 0
         static let green: Int = 1
         static let blue: Int = 2
+        // alpha는 밝기
         static let alpha: Int = 3
         
+        // sender 에서 전달된 tag의 값으로 red, green, blue의 값을 알기위한 func
         static func tag(`for`: Component) -> Int {
             return `for` + 100
         }
         
+        // sender 에서 전달된 tag의 값으로 red, green, blue의 값을 알기위한 func
         static func component(from: SliderTag) -> Component {
             return from - 100
         }
     }
     
+    // storyboard의 slider tag 값
     private struct ViewTag {
         static let sliderRed: Int = 100
         static let sliderGreen: Int = 101
@@ -43,20 +47,24 @@ class ViewController: UIViewController {
     @IBOutlet weak var pickerView: UIPickerView!
     
     // MARK: Privates
+    // 보통 rgb값은 0~255의 실수로 표현
     private let rgbStep: Float = 255.0
     private let numberOfRGBStep: Int = 256
     private let numberOfAlphaStep: Int = 11
     
-    
+    // 사용자가 slider를 움직일때 호출
     @IBAction func sliderValueChanged(_ sender: UISlider) {
         
+        // slider의 태그가 올바르지 못한 값일때 탈출
         guard(ViewTag.sliderRed...ViewTag.sliderAlpha).contains(sender.tag) else{
             print("wrong slider tag")
             return
         }
         
+        // tag값 추출
         let component: Int = ColorComponent.component(from: sender.tag)
         let row: Int
+        
         
         if component == ColorComponent.alpha {
             row = Int(sender.value * 10)
@@ -66,6 +74,7 @@ class ViewController: UIViewController {
         
         self.pickerView.selectRow(row, inComponent: component, animated: false)
         
+        // rgb값 색상칮기 호출
         self.matchViewColerWithCurrentValue()
     }
     
@@ -106,10 +115,12 @@ class ViewController: UIViewController {
 
 extension ViewController: UIPickerViewDelegate, UIPickerViewDataSource {
     
+    // UIPickerViewDelegate 프로토콜의 정의부에서 optional이 붙지않은 함수이기 때문에 반드시 정의
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return ColorComponent.count
     }
     
+    // UIPickerViewDelegate 프로토콜의 정의부에서 optional이 붙지않은 함수이기 때문에 반드시 정의
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         if component == ColorComponent.alpha {
             return self.numberOfAlphaStep
